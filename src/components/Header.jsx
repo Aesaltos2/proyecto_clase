@@ -5,7 +5,7 @@ const Header = () => {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <header className="w-screen h-[70px] border border-black flex justify-end">
+    <header className="w-screen h-[70px] border  flex justify-end">
       <div className="w-[300px] h-full flex justify-center gap-2 items-center ">
         <figure>
           <img
