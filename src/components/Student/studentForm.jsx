@@ -8,7 +8,7 @@ const ExamForm = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    <div className="flex flex-col items-center justify-center h-screen bg-gray-100">
       <div className="bg-white shadow-md rounded-lg p-6 max-w-md w-full">
         <h1 className="text-2xl font-bold text-center text-blue-500 mb-4">Elementary</h1>
         
