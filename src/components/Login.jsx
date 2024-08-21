@@ -5,7 +5,7 @@ const Login = () => {
 
   return (
     <main className="bg-[url('/wallpaper-login.jpg')] h-screen w-screen flex justify-center items-center">
-      <div className="sm:h-[40%] sm:w-[70%] rounded-xl bg-white flex flex-col sm:flex-row">
+      <div className=" sm:h-1vh sm:w-[70%] rounded-xl bg-white flex flex-col  sm:flex-row">
         <div className="sm:w-[50%] w-full  sm:border-r sm:border-r-gray-400 flex flex-col justify-between gap-5 my-3 p-2 items-center">
           <figure className="h-[25%] w-[70%]">
             <img src="/logo 2023.png" alt="" className="w-full h-full" />
