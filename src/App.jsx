@@ -1,8 +1,9 @@
-import React from 'react'
-import VideoPage from './Pages/Student/VideoPage'
+import NavbarTeacher from "./components/NavbarTeacher";
+
 
 export default function App() {
+
   return (
-    <VideoPage/>
+    <NavbarTeacher />
   )
 }
