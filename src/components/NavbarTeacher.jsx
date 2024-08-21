@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 
 const NavbarTeacher = () => {
   return (
@@ -16,7 +17,9 @@ const NavbarTeacher = () => {
           </li>
           <li className="mb-2">
             <button className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-200">
-              Exámenes
+              <Link to="/teacher/examenes">
+                Exámenes
+              </Link>
             </button>
           </li>
           <li className="mb-2">
