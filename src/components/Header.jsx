@@ -5,8 +5,8 @@ const Header = () => {
   const [showModal, setShowModal] = useState(false);
 
   return (
-    <header className="w-screen h-[70px] border  flex justify-end">
-      <div className="w-[300px] h-full flex justify-center gap-2 items-center ">
+    <header className="w-full h-[70px] border-b flex justify-end items-center">
+      <div className="px-4 h-full flex justify-center gap-2 items-center ">
         <figure>
           <img
             src="/public/logos del header/usuario_default.png"
