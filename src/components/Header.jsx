@@ -1,21 +1,27 @@
 import { useState } from "react";
 import { Modal } from "./Modal";
+import { Authcontext } from "../context/AuthContext";
+import { useContext } from "react";
+import profile from "/public/logos del header/usuario_default.png"
 
 const Header = () => {
   const [showModal, setShowModal] = useState(false);
-
+  const { dataUser, logout, options, modal } = useContext(Authcontext);
+  
   return (
     <header className="w-full h-[70px] border-b flex justify-end items-center">
       <div className="px-4 h-full flex justify-center gap-2 items-center ">
         <figure>
           <img
-            src="/public/logos del header/usuario_default.png"
-            alt="imagen usuario"
-            className="w-[32px] h-[32px] rounded-lg"
+            src={dataUser?.photo ? `http://localhost:3000/api/user/image/${dataUser.photo}` : profile}
+            alt={dataUser?.name}
+            className="rounded-lg"
+            width={32} 
+            height={32} 
           />
         </figure>
 
-        <h1>User Name</h1>
+        <h1>{dataUser?.name}</h1>
 
         <button onClick={() => setShowModal(!showModal)}>
           {showModal ? (
