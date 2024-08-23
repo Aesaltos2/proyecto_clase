@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const generateRandomText = () => {
     const texts = [
@@ -9,18 +9,30 @@ const generateRandomText = () => {
     ];
     return texts[Math.floor(Math.random() * texts.length)];
 };
+
 const StudentCard = () => {
-    const text1 = generateRandomText();
-    const text2 = generateRandomText();
+    const [cards, setCards] = useState([{ id: 0, text1: generateRandomText(), text2: generateRandomText() }]);
+    const addCard = () => {
+
+        const newCard = { id: cards.length, text1: generateRandomText(), text2: generateRandomText() };
+        setCards([...cards, newCard]);
+    };
 
     return (
-        <div className="max-w-xs p-4 bg-white border-4 border-blue-400 rounded-xl shadow-md">
-            <h2 className="text-orange-500 text-xl font-bold mb-2 text-center">Exam Info</h2>
-            <p className="text-gray-700 text-sm">
-                {text1}
-                <br /><br />
-                {text2}
-            </p>
+        <div className="p-4">
+            <button onClick={addCard} className="mb-4 p-2 bg-blue-500 text-white rounded-full hover:bg-blue-600">+</button>
+            <div className="grid grid-cols-3 gap-4">
+                {cards.map((card) => (
+                    <div key={card.id} className="max-w-xs p-4 bg-white border-4 border-blue-400 rounded-xl shadow-md">
+                        <h2 className="text-orange-500 text-xl font-bold mb-2 text-center">Exam Info</h2>
+                        <p className="text-gray-700 text-sm">
+                            {card.text1}
+                            <br /><br />
+                            {card.text2}
+                        </p>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
