@@ -1,55 +1,34 @@
-
 import React, { useState } from 'react';
 
 const CreateExam = () => {
   const [selectedLevel, setSelectedLevel] = useState('');
   const [selectedType, setSelectedType] = useState('');
-  const [isLevelOpen, setIsLevelOpen] = useState(false);
-  const [isTypeOpen, setIsTypeOpen] = useState(false);
-  const [isQuestionTypeVisible, setIsQuestionTypeVisible] = useState(false);
-  const [isQuestionTypeDropdownOpen, setIsQuestionTypeDropdownOpen] = useState(false);
-  const [questions, setQuestions] = useState([]);
+  const [isLevelDropdownOpen, setIsLevelDropdownOpen] = useState(false);
+  const [isTypeDropdownOpen, setIsTypeDropdownOpen] = useState(false);
+  const [isQuestionFormVisible, setIsQuestionFormVisible] = useState(false);
   const [questionText, setQuestionText] = useState('');
   const [multipleChoices, setMultipleChoices] = useState(['', '', '']);
+  const [questions, setQuestions] = useState([]);
 
-  const toggleLevelDropdown = () => {
-    setIsLevelOpen(!isLevelOpen);
-  };
-
-  const toggleTypeDropdown = () => {
-    setIsTypeOpen(!isTypeOpen);
-  };
-
-  const handleLevelClick = (level) => {
+  const handleLevelDropdownToggle = () => setIsLevelDropdownOpen(!isLevelDropdownOpen);
+  const handleTypeDropdownToggle = () => setIsTypeDropdownOpen(!isTypeDropdownOpen);
+  const handleLevelSelect = (level) => {
     setSelectedLevel(level);
-    setIsLevelOpen(false);
+    setIsLevelDropdownOpen(false);
   };
-
-  const handleTypeClick = (type) => {
+  const handleTypeSelect = (type) => {
     setSelectedType(type);
-    setIsQuestionTypeDropdownOpen(false);
-    setQuestionText(''); // Reset question input when type changes
-    setMultipleChoices(['', '', '']); // Reset multiple choices when type changes
+    setIsTypeDropdownOpen(false);
+    setQuestionText('');
+    setMultipleChoices(['', '', '']);
   };
-
-  const handleAddQuestionClick = () => {
-    setIsQuestionTypeVisible(true);
-  };
-
-  const toggleQuestionTypeDropdown = () => {
-    setIsQuestionTypeDropdownOpen(!isQuestionTypeDropdownOpen);
-  };
-
-  const handleQuestionChange = (e) => {
-    setQuestionText(e.target.value);
-  };
-
+  const handleAddQuestionClick = () => setIsQuestionFormVisible(true);
+  const handleQuestionTextChange = (e) => setQuestionText(e.target.value);
   const handleChoiceChange = (index, value) => {
     const newChoices = [...multipleChoices];
     newChoices[index] = value;
     setMultipleChoices(newChoices);
   };
-
   const handleSaveQuestion = () => {
     const newQuestion = {
       type: selectedType,
@@ -57,9 +36,8 @@ const CreateExam = () => {
       choices: selectedType === 'Opción múltiple' ? multipleChoices : null,
     };
     setQuestions([...questions, newQuestion]);
-    setIsQuestionTypeVisible(false);
+    setIsQuestionFormVisible(false);
     setSelectedType('');
-    setIsQuestionTypeDropdownOpen(false);
   };
 
   return (
@@ -70,33 +48,17 @@ const CreateExam = () => {
         <div className="mb-6">
           <label className="block text-lg font-semibold mb-2">Elige el nivel:</label>
           <div className="relative">
-            <button 
-              onClick={toggleLevelDropdown} 
-              className="w-full border border-gray-400 p-2 text-left flex justify-between items-center"
-            >
+            <button onClick={handleLevelDropdownToggle} className="w-full border border-gray-400 p-2 text-left flex justify-between items-center">
               {selectedLevel || 'Nivel:'}
-              <span className="ml-2">&#9660;</span> {/* Icono de flecha hacia abajo */}
+              <span className="ml-2">&#9660;</span>
             </button>
-            {isLevelOpen && (
+            {isLevelDropdownOpen && (
               <div className="absolute w-full bg-white border border-gray-400 mt-1 rounded-lg z-10">
-                <button 
-                  onClick={() => handleLevelClick('Elementary')} 
-                  className="w-full text-left p-2 hover:bg-gray-100"
-                >
-                  Elementary
-                </button>
-                <button 
-                  onClick={() => handleLevelClick('A1')} 
-                  className="w-full text-left p-2 hover:bg-gray-100"
-                >
-                  A1
-                </button>
-                <button 
-                  onClick={() => handleLevelClick('A2')} 
-                  className="w-full text-left p-2 hover:bg-gray-100"
-                >
-                  A2
-                </button>
+                {['Elementary', 'A1', 'A2'].map(level => (
+                  <button key={level} onClick={() => handleLevelSelect(level)} className="w-full text-left p-2 hover:bg-gray-100">
+                    {level}
+                  </button>
+                ))}
               </div>
             )}
           </div>
@@ -105,88 +67,35 @@ const CreateExam = () => {
         <div className="mb-6">
           <label className="block text-lg font-semibold mb-2">Elige el tipo:</label>
           <div className="relative">
-            <button 
-              onClick={toggleTypeDropdown} 
-              className="w-full border border-gray-400 p-2 text-left flex justify-between items-center"
-            >
+            <button onClick={handleTypeDropdownToggle} className="w-full border border-gray-400 p-2 text-left flex justify-between items-center">
               {selectedType || 'Tipo:'}
-              <span className="ml-2">&#9660;</span> {/* Icono de flecha hacia abajo */}
+              <span className="ml-2">&#9660;</span>
             </button>
-            {isTypeOpen && (
+            {isTypeDropdownOpen && (
               <div className="absolute w-full bg-white border border-gray-400 mt-1 rounded-lg z-10">
-                <button 
-                  onClick={() => handleTypeClick('Pregunta simple')} 
-                  className="w-full text-left p-2 hover:bg-gray-100"
-                >
-                  Pregunta simple
-                </button>
-                <button 
-                  onClick={() => handleTypeClick('Opción múltiple')} 
-                  className="w-full text-left p-2 hover:bg-gray-100"
-                >
-                  Opción múltiple
-                </button>
-                <button 
-                  onClick={() => handleTypeClick('Video')} 
-                  className="w-full text-left p-2 hover:bg-gray-100"
-                >
-                  Video
-                </button>
+                {['Pregunta simple', 'Opción múltiple', 'Video'].map(type => (
+                  <button key={type} onClick={() => handleTypeSelect(type)} className="w-full text-left p-2 hover:bg-gray-100">
+                    {type}
+                  </button>
+                ))}
               </div>
             )}
           </div>
         </div>
 
         <div className="mb-6 flex justify-end">
-          <button 
-            onClick={handleAddQuestionClick} 
-            className="bg-blue-500 text-white rounded-lg py-2 px-4 hover:bg-blue-600 transition duration-300"
-          >
+          <button onClick={handleAddQuestionClick} className="bg-blue-500 text-white rounded-lg py-2 px-4 hover:bg-blue-600 transition duration-300">
             Agregar pregunta
           </button>
         </div>
 
-        {isQuestionTypeVisible && (
-          <div className="mb-6">
-            <button 
-              onClick={toggleQuestionTypeDropdown} 
-              className="w-full border border-gray-400 p-2 text-left flex justify-between items-center"
-            >
-              {selectedType || 'Elija opción'}
-              <span className="ml-2">&#9660;</span> {/* Icono de flecha hacia abajo */}
-            </button>
-            {isQuestionTypeDropdownOpen && (
-              <div className="absolute w-full bg-white border border-gray-400 mt-1 rounded-lg z-10">
-                <button 
-                  onClick={() => handleTypeClick('Pregunta simple')} 
-                  className="w-full text-left p-2 hover:bg-gray-100"
-                >
-                  Pregunta simple
-                </button>
-                <button 
-                  onClick={() => handleTypeClick('Opción múltiple')} 
-                  className="w-full text-left p-2 hover:bg-gray-100"
-                >
-                  Opción múltiple
-                </button>
-                <button 
-                  onClick={() => handleTypeClick('Video')} 
-                  className="w-full text-left p-2 hover:bg-gray-100"
-                >
-                  Video
-                </button>
-              </div>
-            )}
-          </div>
-        )}
-
-        {selectedType && (
+        {isQuestionFormVisible && (
           <div className="mb-6">
             <label className="block text-lg font-semibold mb-2">Escribe la pregunta:</label>
-            <input 
-              type="text" 
+            <input
+              type="text"
               value={questionText}
-              onChange={handleQuestionChange}
+              onChange={handleQuestionTextChange}
               className="w-full border border-gray-400 p-2 mb-4 rounded-lg"
               placeholder="Escribe la pregunta aquí"
             />
@@ -204,10 +113,7 @@ const CreateExam = () => {
                 ))}
               </div>
             )}
-            <button 
-              onClick={handleSaveQuestion} 
-              className="bg-green-500 text-white rounded-lg py-2 px-4 mt-4 w-full hover:bg-green-600 transition duration-300"
-            >
+            <button onClick={handleSaveQuestion} className="bg-green-500 text-white rounded-lg py-2 px-4 mt-4 w-full hover:bg-green-600 transition duration-300">
               Guardar pregunta
             </button>
           </div>

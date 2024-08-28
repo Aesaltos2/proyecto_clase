@@ -1,21 +1,18 @@
 import axios from "axios"
 
-export const loginUser = async (data) => {
+export const authAPI = axios.create({ baseURL: 'http://localhost:3000' });
 
-    const user = await axios.post('http://localhost:3000/api/user/login', data)
-    return user
+export const loginUser = async (username, password) => {
+
+    const user = await authAPI.post('/api/auth/login', { username, password });
+    return user.data
 }
 
 export const infoUser = async () => {
     const token = localStorage.getItem('token')
-    const info = await axios.get('http://localhost:3000/api/user/info', {
+    const info = await authAPI.get('/api/user/me', {
         headers: { Authorization: token }
     })
     return info.data
 }
-export const editUser = async (dataForm) => {
-    const id = localStorage.getItem('id')
-    const user = await axios.patch(`http://localhost:3000/api/user/${id}`,dataForm)
-    console.log(user.data);
-    return user.data
-}
+
