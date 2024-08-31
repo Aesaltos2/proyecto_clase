@@ -9,7 +9,7 @@ export default function VideoPage() {
             <Navbar className="w-1/4" />
             <div className="flex flex-1 flex-col">
                 <Header className="w-full flex-shrink-0" />
-                <StudentCard/>
+                <StudentCard />
             </div>
         </div>
     )

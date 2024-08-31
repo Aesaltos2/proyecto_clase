@@ -1,6 +1,6 @@
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { createContext, useEffect, useState } from "react";
-import { editUser, infoUser, loginUser } from "../services/DataService";
+import { infoUser, loginUser } from "../services/DataService";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export const Authcontext = createContext()
@@ -11,44 +11,15 @@ export const AuthProvider = ({ children }) => {
     const { pathname } = useLocation()
     const [dataUser, setDataUser] = useState('')
 
-    const regiterMutation = useMutation({
-        onError: data => alert(data.response.data.message),
-        onSuccess: ({ data }) => {
-            console.log(data.message)
-            navigate('/login')
-        }
-    })
-
     const Login = useMutation({
         mutationKey: ['login'],
         mutationFn: loginUser,
-        onError: data => alert(data.response.data.message),
-        onSuccess: ({ data }) => {
-            console.log(data.message)
+        onError: error => alert(error.response?.data?.message),
+        onSuccess: data=> {
             localStorage.setItem('token', data.token)
-            localStorage.setItem('id', data.user.id)
-            setDataUser(data.user)
             navigate('/dashboard')
         }
     })
-
-    const edit = useMutation({
-        mutationKey: ['edit'],
-        mutationFn: editUser,
-        onError: (error) => {
-            console.log("Error data:", error);
-            const errorMessage = error?.response?.data?.message || "Error desconocido";
-            alert(errorMessage);
-        },
-        onSuccess: (data) => {
-            console.log("Success data:", data);
-            const successMessage = data?.message || "Operación exitosa";
-            console.log(successMessage);
-
-            navigate('/dashboard');
-        }
-    })
-
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ['user'],
@@ -74,7 +45,7 @@ export const AuthProvider = ({ children }) => {
         setModal(!modal)
     }
     return (
-        <Authcontext.Provider value={{ options, modal, regiterMutation, Login, dataUser, edit, logout, isLoading, isError }}>
+        <Authcontext.Provider value={{ options, modal, Login, dataUser, logout, isLoading, isError }}>
             {children}
         </Authcontext.Provider>)
 }

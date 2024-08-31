@@ -1,6 +1,6 @@
 import React from 'react'
 import Header from '../../components/Header';
-import Navbar from '../../components/NavbarTeacher';
+import Navbar from '../../components/Navbar';
 import CreateExam from '../../components/Teacher/createExam';
 
 export default function NewExamPage() {
