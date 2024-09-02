@@ -1,42 +1,40 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';  
+import React, { useContext } from 'react'; // Importar useContext
+import { Link } from 'react-router-dom';
+import { Authcontext } from '../../context/AuthContext';
 
-const StudentCard = () => {
-    const [cards, setCards] = useState([]);
+const StudentCard = ({ examenId, calificacionMinima, cursoUsuario, index }) => {
+    const { dataUser } = useContext(Authcontext);
 
-    useEffect(() => {
-        
-        const fetchExams = async () => {
-            try {
-                const response = await axios.get('/api/examenes');  
-                setCards(response.data);
-            } catch (error) {
-                console.error('Error al obtener los exámenes', error);
-            }
-        };
-
-        fetchExams();
-    }, []);
+    if (!dataUser?.data) {
+        return null; // No renderiza nada si no hay datos de usuario
+    }
 
     return (
-        <div className="p-4">
-            <div className="grid grid-cols-3 gap-4">
-                {cards.map((card) => (
-                    <div key={card._id} className="max-w-xs p-4 bg-white border-4 border-blue-400 rounded-xl shadow-md">
-                        <h2 className="text-orange-500 text-xl font-bold mb-2 text-center">Exam Info</h2>
-                        <p className="text-gray-700 text-sm">
-                            Curso: {card.curso}
-                            <br />
-                            Calificación Mínima: {card.calificacionMinima}
-                            <br />
-                            Duración: {card.duracion}
-                            <br />
-                            Preguntas: {card.preguntas.length}  
-                        </p>
+        <Link to={`/examenes/${examenId}`}>
+            <div className="p-4">
+                <div className="grid gap-4">
+                    <div key={examenId} className="max-w-xs p-4 bg-white border-4 border-blue-400 rounded-xl shadow-md">
+                        {dataUser?.data?.rol === 'alumno' && (
+                            <>
+                                <h2 className="text-orange-500 text-xl font-bold mb-2 text-center">
+                                    {cursoUsuario?.nombre?.toUpperCase()}
+                                </h2>
+                                <p className="text-gray-700 text-sm text-center">Exam: {index}</p>
+                                <p className='text-sm'>Calificación mínima: {calificacionMinima}</p>
+                            </>
+                        )}
+
+                        {dataUser?.data?.rol === 'maestro' && (
+                            <div className='justify-content-center'>
+                                <h2 className="text-blue-500 text-2xl font-bold mb-2 text-center">
+                                    {cursoUsuario?.nombre?.toUpperCase()}
+                                </h2>
+                            </div>
+                        )}
                     </div>
-                ))}
+                </div>
             </div>
-        </div>
+        </Link>
     );
 };
 

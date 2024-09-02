@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 const CreateExam = () => {
   const [selectedLevel, setSelectedLevel] = useState('');
@@ -119,9 +120,16 @@ const CreateExam = () => {
           </div>
         )}
 
-        <button className="bg-green-500 text-white rounded-lg py-2 px-4 w-full hover:bg-green-600 transition duration-300">
-          Crear examen
-        </button>
+        <Link to="/examenes">
+          <button className="bg-green-500 text-white rounded-lg py-2 px-4 w-full hover:bg-green-600 transition duration-300">
+            Crear examen
+          </button>
+        </Link>
+        <Link to="/examenes">
+          <button className="bg-red-500 text-white rounded-lg py-2 px-4 w-full hover:bg-red-600 transition duration-300 mt-4">
+            Cancelar
+          </button>
+        </Link>
       </div>
     </div>
   );

@@ -1,19 +1,58 @@
-import React from 'react'
-import Header from '../../components/Header';
-import Navbar from '../../components/Navbar';
+import React, { useEffect, useState, useContext } from 'react';
 import StudentCard from '../../components/Student/studentCard';
-import { Link } from 'react-router-dom';
+import MainLayout from '../../layouts/MainLayout';
+import { getExamenesByCurso } from '../../services/DataService';
+import { Authcontext } from '../../context/AuthContext';
 
 export default function Examenespages() {
-  return (
-    <div className="h-screen flex overflow-hidden">
-      <Navbar className="w-1/4" />
-      <div className="flex flex-1 flex-col">
-        <Header className="w-full flex-shrink-0" />
-        <Link to="/examen/1">
-          <StudentCard />
-        </Link>
+  const { dataUser, isLoading: isLoadingUser } = useContext(Authcontext);
+  const [examenes, setExamenes] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [cursoUsuario, setCursoUsuario] = useState(null);
+
+  useEffect(() => {
+    const fetchExamenes = async () => {
+      if (dataUser?.data && dataUser?.data?.cursos && dataUser?.data?.cursos?.length > 0) {
+        const cursoUsuario = dataUser?.data?.cursos[0];
+        setCursoUsuario(cursoUsuario);
+        const token = localStorage.getItem('token');
+
+        try {
+          const examenesData = await getExamenesByCurso(cursoUsuario._id, token);
+          setExamenes(examenesData);
+        } catch (error) {
+          console.error('Error al obtener los exámenes:', error);
+        } finally {
+          setIsLoading(false);
+        }
+      }
+    };
+
+    fetchExamenes();
+  }, [dataUser]);
+
+  if (isLoading || isLoadingUser) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="text-2xl">Cargando...</div>
       </div>
-    </div>
-  )
+    );
+  }
+
+  return (
+    <MainLayout>
+      <h1 className="text-4xl font-bold text-center my-8 text-gray-800">Exámenes</h1>
+      <section className="max-w-[1200px] m-auto grid grid-cols-3 gap-6">
+        {examenes.map((examen, index) => (
+          <StudentCard
+            key={examen._id}
+            examenId={examen._id}
+            calificacionMinima={examen.calificacionMinima}
+            cursoUsuario={cursoUsuario}
+            index={index + 1}
+          />
+        ))}
+      </section>
+    </MainLayout>
+  );
 }

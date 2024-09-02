@@ -1,54 +1,26 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { createContext, useEffect, useState } from "react";
-import { editUser, infoUser, loginUser } from "../services/DataService";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getExamenById, sendRespuestaExamen, infoUser, loginUser } from "../services/DataService";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export const Authcontext = createContext()
+export const Authcontext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [modal, setModal] = useState(false)
-    const navigate = useNavigate()
-    const { pathname } = useLocation()
-    const [dataUser, setDataUser] = useState('')
-
-    const regiterMutation = useMutation({
-        onError: data => alert(data.response.data.message),
-        onSuccess: ({ data }) => {
-            console.log(data.message)
-            navigate('/login')
-        }
-    })
+    const [modal, setModal] = useState(false);
+    const navigate = useNavigate();
+    const { pathname } = useLocation();
+    const [dataUser, setDataUser] = useState(null);
+    const [videoURL, setVideoURL] = useState(null);
 
     const Login = useMutation({
         mutationKey: ['login'],
         mutationFn: loginUser,
-        onError: data => alert(data.response.data.message),
-        onSuccess: ({ data }) => {
-            console.log(data.message)
-            localStorage.setItem('token', data.token)
-            localStorage.setItem('id', data.user.id)
-            setDataUser(data.user)
-            navigate('/dashboard')
-        }
-    })
-
-    const edit = useMutation({
-        mutationKey: ['edit'],
-        mutationFn: editUser,
-        onError: (error) => {
-            console.log("Error data:", error);
-            const errorMessage = error?.response?.data?.message || "Error desconocido";
-            alert(errorMessage);
-        },
-        onSuccess: (data) => {
-            console.log("Success data:", data);
-            const successMessage = data?.message || "Operación exitosa";
-            console.log(successMessage);
-
+        onError: error => alert(error.response?.data?.message),
+        onSuccess: data => {
+            localStorage.setItem('token', data.token);
             navigate('/dashboard');
-        }
-    })
-
+        },
+    });
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ['user'],
@@ -63,18 +35,43 @@ export const AuthProvider = ({ children }) => {
     }, [data, isLoading]);
 
     function logout() {
-        localStorage.removeItem('token')
-        localStorage.removeItem('id')
-        setDataUser(null)
-        navigate('/login')
-        setModal(false)
+        localStorage.removeItem('token');
+        localStorage.removeItem('id');
+        setDataUser(null);
+        navigate('/login');
+        setModal(false);
     }
 
     function options() {
-        setModal(!modal)
+        setModal(!modal);
     }
+
+    const useExamen = (id) => {
+        const authToken = localStorage.getItem('token');
+
+        const { data, isLoading } = useQuery({
+            queryKey: ['examen', id],
+            queryFn: () => getExamenById(id, authToken),
+        });
+
+        const examenMutation = useMutation({
+            mutationKey: ['examen'],
+            mutationFn: (formData) => sendRespuestaExamen(formData, authToken),
+            onSuccess: res => {
+                alert(res.message);
+                navigate('/dashboard');
+            },
+            onError: res => {
+                alert('Error al enviar la respuesta');
+            },
+        });
+
+        return { data, isLoading, examenMutation };
+    }
+
     return (
-        <Authcontext.Provider value={{ options, modal, regiterMutation, Login, dataUser, edit, logout, isLoading, isError }}>
+        <Authcontext.Provider value={{ options, modal, Login, dataUser, logout, isLoading, isError, useExamen, setUser: setDataUser, setVideoURL, videoURL }}>
             {children}
-        </Authcontext.Provider>)
+        </Authcontext.Provider>
+    );
 }
