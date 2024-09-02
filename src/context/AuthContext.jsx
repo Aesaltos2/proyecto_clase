@@ -44,6 +44,8 @@ export const AuthProvider = ({ children }) => {
     function options() {
         setModal(!modal)
     }
+
+    
     return (
         <Authcontext.Provider value={{ options, modal, Login, dataUser, logout, isLoading, isError }}>
             {children}
