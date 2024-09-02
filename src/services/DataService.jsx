@@ -30,6 +30,7 @@ export const getExamenesByCurso = async (cursoId, token) => {
   };
   
   export const sendRespuestaExamen = async (data, token) => {
+    console.log(data);
     const res = await authAPI.post('/api/respuestas', data, {
       headers: { Authorization: token },
     });

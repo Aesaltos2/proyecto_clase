@@ -28,19 +28,19 @@ function PreguntaVideo({ enunciado }) {
 
   useEffect(() => {
     if (mediaBlobUrl) {
-      setVideoURL(mediaBlobUrl); // Usar setVideoURL del contexto
+      setVideoURL(mediaBlobUrl);
     }
   }, [mediaBlobUrl, setVideoURL]);
 
   return (
-    <div>
-      <p className='font-bold mb-3'>{enunciado}</p>
-      <div className='flex gap-4 justify-center mb-3'>
+    <div className="flex flex-col items-center mb-6">
+      <p className="font-bold mb-3 text-center">{enunciado}</p>
+      <div className="flex gap-4 justify-center mb-3">
         {debeIniciar && (
           <button
             onClick={startRecording}
-            type='button'
-            className='bg-green-400 px-3 py-2 rounded-md text-white'
+            type="button"
+            className="bg-green-500 px-4 py-2 rounded-md text-white hover:bg-green-600 transition duration-300"
           >
             {status === 'idle' ? 'Iniciar grabación' : 'Grabar otra vez'}
           </button>
@@ -48,8 +48,8 @@ function PreguntaVideo({ enunciado }) {
         {debeDetener && (
           <button
             onClick={stopRecording}
-            type='button'
-            className='px-3 py-2 bg-red-400 rounded-md text-white'
+            type="button"
+            className="px-4 py-2 bg-red-500 rounded-md text-white hover:bg-red-600 transition duration-300"
           >
             Detener
           </button>
@@ -57,8 +57,8 @@ function PreguntaVideo({ enunciado }) {
         {debeReaundar && (
           <button
             onClick={resumeRecording}
-            type='button'
-            className='px-3 py-2 bg-yellow-400 rounded-md text-white'
+            type="button"
+            className="px-4 py-2 bg-yellow-500 rounded-md text-white hover:bg-yellow-600 transition duration-300"
           >
             Reanudar
           </button>
@@ -66,8 +66,8 @@ function PreguntaVideo({ enunciado }) {
         {debePausar && (
           <button
             onClick={pauseRecording}
-            type='button'
-            className='px-3 py-2 bg-orange-400 rounded-md text-white'
+            type="button"
+            className="px-4 py-2 bg-orange-500 rounded-md text-white hover:bg-orange-600 transition duration-300"
           >
             Pausar
           </button>
@@ -79,7 +79,7 @@ function PreguntaVideo({ enunciado }) {
           ref={videoRef}
           controls
           autoPlay
-          className='m-auto object-contain rounded-lg w-auto max-h-[400px]'
+          className="rounded-lg w-full max-w-lg object-contain"
         />
       )}
       {mediaBlobUrl && (
@@ -87,7 +87,7 @@ function PreguntaVideo({ enunciado }) {
           src={mediaBlobUrl}
           controls
           autoPlay
-          className='m-auto object-contain rounded-lg w-auto max-h-[400px]'
+          className="rounded-lg w-full max-w-lg object-contain"
         />
       )}
     </div>

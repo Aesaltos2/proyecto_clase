@@ -1,25 +1,26 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { createContext, useEffect, useState } from "react";
-import { infoUser, loginUser } from "../services/DataService";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { getExamenById, sendRespuestaExamen, infoUser, loginUser } from "../services/DataService";
 import { useLocation, useNavigate } from "react-router-dom";
 
-export const Authcontext = createContext()
+export const Authcontext = createContext();
 
 export const AuthProvider = ({ children }) => {
-    const [modal, setModal] = useState(false)
-    const navigate = useNavigate()
-    const { pathname } = useLocation()
-    const [dataUser, setDataUser] = useState('')
+    const [modal, setModal] = useState(false);
+    const navigate = useNavigate();
+    const { pathname } = useLocation();
+    const [dataUser, setDataUser] = useState(null);
+    const [videoURL, setVideoURL] = useState(null);
 
     const Login = useMutation({
         mutationKey: ['login'],
         mutationFn: loginUser,
         onError: error => alert(error.response?.data?.message),
-        onSuccess: data=> {
-            localStorage.setItem('token', data.token)
-            navigate('/dashboard')
-        }
-    })
+        onSuccess: data => {
+            localStorage.setItem('token', data.token);
+            navigate('/dashboard');
+        },
+    });
 
     const { data, isLoading, isError } = useQuery({
         queryKey: ['user'],
@@ -34,20 +35,43 @@ export const AuthProvider = ({ children }) => {
     }, [data, isLoading]);
 
     function logout() {
-        localStorage.removeItem('token')
-        localStorage.removeItem('id')
-        setDataUser(null)
-        navigate('/login')
-        setModal(false)
+        localStorage.removeItem('token');
+        localStorage.removeItem('id');
+        setDataUser(null);
+        navigate('/login');
+        setModal(false);
     }
 
     function options() {
-        setModal(!modal)
+        setModal(!modal);
     }
 
-    
+    const useExamen = (id) => {
+        const authToken = localStorage.getItem('token');
+
+        const { data, isLoading } = useQuery({
+            queryKey: ['examen', id],
+            queryFn: () => getExamenById(id, authToken),
+        });
+
+        const examenMutation = useMutation({
+            mutationKey: ['examen'],
+            mutationFn: (formData) => sendRespuestaExamen(formData, authToken),
+            onSuccess: res => {
+                alert(res.message);
+                navigate('/dashboard');
+            },
+            onError: res => {
+                alert('Error al enviar la respuesta');
+            },
+        });
+
+        return { data, isLoading, examenMutation };
+    }
+
     return (
-        <Authcontext.Provider value={{ options, modal, Login, dataUser, logout, isLoading, isError }}>
+        <Authcontext.Provider value={{ options, modal, Login, dataUser, logout, isLoading, isError, useExamen, setUser: setDataUser, setVideoURL, videoURL }}>
             {children}
-        </Authcontext.Provider>)
+        </Authcontext.Provider>
+    );
 }

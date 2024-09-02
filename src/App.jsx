@@ -8,6 +8,7 @@ import Examenespages from './Pages/Student/Examenespages'
 import Exampage from './Pages/Student/Exampage'
 import VideoPage from './Pages/Student/VideoPage'
 import AlumnosTable from './Pages/Teacher/AlumnosTable'
+import NewExamPage from './Pages/Teacher/NewExamPage'
 
 export default function App() {
   return (
@@ -18,9 +19,10 @@ export default function App() {
       <Route  element={<Proteger/>} >
         <Route path='/dashboard' element={<DashboardPageStudent/>} />
         <Route path='/examenes' element={<Examenespages/>} />
-        <Route path='/examen/:id' element={<Exampage/>} />
+        <Route path='/examenes/:id' element={<Exampage/>} />
         <Route path='/videos/me' element={<VideoPage/>} />
         <Route path='/alumnos' element={<AlumnosTable/>}/>
+        <Route path='/examen/create' element={<NewExamPage/>}/>
       </Route>
     </Routes>
   )
